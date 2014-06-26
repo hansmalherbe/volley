@@ -586,4 +586,9 @@ public abstract class Request<T> implements Comparable<Request<T>> {
         return (mCanceled ? "[X] " : "[ ] ") + getUrl() + " " + trafficStatsTag + " "
                 + getPriority() + " " + mSequence;
     }
+
+	public int getBodyContentLength() throws AuthFailureError {
+		byte[] body = getBody();
+		return body == null ? 0 : body.length;
+	}
 }

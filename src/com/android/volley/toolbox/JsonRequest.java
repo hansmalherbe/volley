@@ -41,6 +41,7 @@ public abstract class JsonRequest<T> extends Request<T> {
 
     private final Listener<T> mListener;
     private final String mRequestBody;
+    private byte[] bodyCache = null;
 
     /**
      * Deprecated constructor for a JsonRequest which defaults to GET unless {@link #getPostBody()}
@@ -91,8 +92,11 @@ public abstract class JsonRequest<T> extends Request<T> {
 
     @Override
     public byte[] getBody() {
+    	if (bodyCache != null || mRequestBody == null)
+    		return bodyCache;
         try {
-            return mRequestBody == null ? null : mRequestBody.getBytes(PROTOCOL_CHARSET);
+        	bodyCache = mRequestBody.getBytes(PROTOCOL_CHARSET);
+            return bodyCache; 
         } catch (UnsupportedEncodingException uee) {
             VolleyLog.wtf("Unsupported Encoding while trying to get the bytes of %s using %s",
                     mRequestBody, PROTOCOL_CHARSET);
