@@ -91,7 +91,6 @@ public class BasicNetwork implements Network {
                 // Gather headers.
                 Map<String, String> headers = new HashMap<String, String>();
                 addCacheHeaders(headers, request.getCacheEntry());
-                addContentLengthHeader(headers, request);
                 httpResponse = mHttpStack.performRequest(request, headers);
                 StatusLine statusLine = httpResponse.getStatusLine();
                 int statusCode = statusLine.getStatusCode();
@@ -153,14 +152,6 @@ public class BasicNetwork implements Network {
             }
         }
     }
-
-    private void addContentLengthHeader(Map<String, String> headers, Request<?> request) throws AuthFailureError {
-    	int method = request.getMethod();
-    	if (method != Method.PUT && method != Method.POST && method != Method.PATCH)
-    		return;
-    	int contentLength = request.getBodyContentLength();
-    	headers.put("Content-Length", Integer.toString(contentLength));
-	}
 
 	/**
      * Logs requests that took over SLOW_REQUEST_THRESHOLD_MS to complete.

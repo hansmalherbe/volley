@@ -84,6 +84,16 @@ public class HurlStack implements HttpStack {
         mSslSocketFactory = sslSocketFactory;
     }
 
+    private void addContentLengthHeader(Map<String, String> headers, Request<?> request) throws AuthFailureError {
+    	if (headers.containsKey("Content-Length") || headers.containsKey("content-length"))
+    		return;
+    	int method = request.getMethod();
+    	if (method != Method.PUT && method != Method.POST && method != Method.PATCH)
+    		return;
+    	int contentLength = request.getBodyContentLength();
+    	headers.put("Content-Length", Integer.toString(contentLength));
+	}
+
     @Override
     public HttpResponse performRequest(Request<?> request, Map<String, String> additionalHeaders)
             throws IOException, AuthFailureError {
@@ -98,6 +108,7 @@ public class HurlStack implements HttpStack {
             }
             url = rewritten;
         }
+    	addContentLengthHeader(map, request);
         URL parsedUrl = new URL(url);
         HttpURLConnection connection = openConnection(parsedUrl, request);
         for (String headerName : map.keySet()) {
