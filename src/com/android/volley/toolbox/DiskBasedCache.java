@@ -152,7 +152,7 @@ public class DiskBasedCache implements Cache {
         for (File file : files) {
             BufferedInputStream fis = null;
             try {
-                fis = new BufferedInputStream(new FileInputStream(file));
+                fis = new BufferedInputStream(new FileInputStream(file), 8192);
                 CacheHeader entry = CacheHeader.readHeader(fis);
                 entry.size = file.length();
                 putEntry(entry.key, entry);
